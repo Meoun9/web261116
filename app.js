@@ -89,4 +89,5 @@ function renderCards(list) {
     } document.getElementById("count").textContent = list.length + "편";
 
 }
+//renderCards(movies);
 applySort();
