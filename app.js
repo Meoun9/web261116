@@ -1,4 +1,4 @@
-// app.js : 영화 배열을 다루는 함수 6개 / 김시윤(2651013) / 10주차
+// app.js : 영화 배열을 다루는 함수 6개 / 김시윤(2651013) / 10주차 -> 11주차
 // average : 영화 배열 ⇒ 평균 평점(숫자)
 const average = list => {
     let sum = 0;
@@ -50,7 +50,43 @@ const posterUrl = (path, size) => {
 }
 console.log(posterUrl(movies[0].poster, "w342"));
 
-// Step 8.
-document.title = "내 영화 " + movies.length + "편";
-console.table(sortByRating(movies));
-document.getElementById("out").textContent = "평균 " + average(movies).toFixed(1) + "점, 최고 " + best(movies).title;
+
+// sortBy : 영화 배열, 키 이름, 내림차순 여부 ⇒ 정렬한 새 배열(원본은 그대로)
+function sortBy(list, key, desc) {
+    const copy = [...list];
+    copy.sort((a, b) => {
+        if (typeof a[key] === "string") return a[key].localeCompare(b[key]);
+        return a[key] - b[key];
+    });
+    if (desc) copy.reverse();
+    return copy;
+}
+
+
+// applySort : 선택 상자 값으로 정렬해서 다시 그리기(반환값 없음)
+function applySort() {
+    const key = document.getElementById("sort").value;
+    renderCards(sortBy(movies, key, key !== "title"));
+}
+
+
+// renderCards : 영화 배열 ⇒ 보드에 카드 생성(반환값 없음)
+function renderCards(list) {
+    const board = document.querySelector(".board");
+    board.innerHTML = "";
+    for (const m of list) {
+        const card = document.createElement("article");
+        card.className = "card";
+        if (m.rating >= 8) { card.classList.add("hot"); }
+        card.innerHTML = `
+ <img class="poster" src="${posterUrl(m.poster, "w342")}" alt="${m.title} 포스터">
+ <span class="badge">${m.rating}</span>
+ <div class="info">
+ <h2>${m.title}</h2>
+ <p class="year">${m.year}</p>
+ </div>`;
+        board.appendChild(card);
+    } document.getElementById("count").textContent = list.length + "편";
+
+}
+applySort();
